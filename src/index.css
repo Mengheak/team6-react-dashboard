@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.active-nav {
+    padding-inline: 10px;
+    border-bottom: 2px solid black;
+}
+
+*{
+    color: #016B61;
+}
