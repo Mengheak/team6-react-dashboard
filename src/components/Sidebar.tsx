@@ -1,3 +1,4 @@
+import Logout from "./Logout";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Page = "dashboard" | "users";
@@ -246,6 +247,9 @@ export const Sidebar = ({
             {collapsed ? <IconChevronRight /> : <IconChevronLeft />}
           </button>
         )}
+        <div className="fixed bottom-16 left-5">
+        <Logout />
+        </div>
       </aside>
     </>
   );
