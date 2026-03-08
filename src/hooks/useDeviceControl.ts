@@ -14,7 +14,7 @@ export const useDeviceControl = () => {
       desc: description,
       timestamp: Date.now(),
     };
-
+    console.log("Pushing activity")
     await push(ref(database, "smart_home/activities"), activity);
   };
 
