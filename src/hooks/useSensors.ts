@@ -29,7 +29,7 @@ export const useSensors = () => {
     const client = mqtt.connect(
       import.meta.env.VITE_MQTT_BROKER,
       {
-        username: import.meta.env.MQTT_USERNAME,
+        username: import.meta.env.VITE_MQTT_USERNAME,
         password: import.meta.env.VITE_MQTT_PASSWORD,
         clean: true,
         reconnectPeriod: 5000,

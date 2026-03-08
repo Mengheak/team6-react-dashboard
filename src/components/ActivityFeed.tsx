@@ -45,7 +45,7 @@ export const ActivityFeed = () => {
 
       {/* List */}
       <ul className="divide-y divide-slate-800/40 overflow-y-auto max-h-[500px] custom-scrollbar">
-        {activities.slice(20).map((a, i) => {
+        {activities.slice(0,20).map((a, i) => {
           return (
             <li
               key={i}
