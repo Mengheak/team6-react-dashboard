@@ -1,4 +1,4 @@
-import { ref, push } from "firebase/database";
+import { ref, push, update } from "firebase/database";
 import { auth, database } from "../config/firebase";
 
 export const useDeviceControl = () => {
@@ -18,5 +18,14 @@ export const useDeviceControl = () => {
     await push(ref(database, "smart_home/activities"), activity);
   };
 
-  return { controlDevice };
+
+  const syncDeviceState = async (roomKey: string, deviceKey: string, value: string | number) => {
+    const stateRef = ref(database, `smart_home/current_state/${roomKey}`);
+    try {
+      await update(stateRef, { [deviceKey]: value });
+    } catch (error) {
+      console.error("Failed to sync state to Firebase:", error);
+    }
+  };
+  return { controlDevice, syncDeviceState };
 };

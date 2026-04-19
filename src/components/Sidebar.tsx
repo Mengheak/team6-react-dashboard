@@ -1,7 +1,7 @@
 import Logout from "./Logout";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-type Page = "dashboard" | "users";
+type Page = "dashboard" | "users" | "rooms";
 
 interface SidebarProps {
   activePage: Page;
@@ -13,36 +13,41 @@ interface SidebarProps {
 // ─── Icons (inline SVG to avoid deps) ────────────────────────────────────────
 const IconGrid = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-    <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+    <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
+    <rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
   </svg>
 );
 
 const IconUsers = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-    <circle cx="9" cy="7" r="4"/>
-    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
   </svg>
 );
 
 const IconChevronLeft = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="15 18 9 12 15 6"/>
+    <polyline points="15 18 9 12 15 6" />
   </svg>
 );
 
 const IconChevronRight = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="9 18 15 12 9 6"/>
+    <polyline points="9 18 15 12 9 6" />
   </svg>
+);
+
+const IconRooms = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-door-open-icon lucide-door-open"><path d="M11 20H2" /><path d="M11 4.562v16.157a1 1 0 0 0 1.242.97L19 20V5.562a2 2 0 0 0-1.515-1.94l-4-1A2 2 0 0 0 11 4.561z" /><path d="M11 4H8a2 2 0 0 0-2 2v14" /><path d="M14 12h.01" /><path d="M22 20h-3" /></svg>
 );
 
 // ─── Nav items config ─────────────────────────────────────────────────────────
 const NAV_ITEMS: { id: Page; label: string; icon: React.ReactNode; accent: string }[] = [
-  { id: "dashboard", label: "Dashboard",    icon: <IconGrid />,  accent: "#38bdf8" },
-  { id: "users",     label: "Manage Users", icon: <IconUsers />, accent: "#a78bfa" },
+  { id: "dashboard", label: "Dashboard", icon: <IconGrid />, accent: "#38bdf8" },
+  { id: "users", label: "Manage Users", icon: <IconUsers />, accent: "#a78bfa" },
+  { id: "rooms", label: "Manage Rooms", icon: <IconRooms />, accent: "#f59e0b" },
 ];
 
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
@@ -204,7 +209,7 @@ export const Sidebar = ({
             <div style={{ fontSize: "9px", color: "#334155", letterSpacing: "0.3em", marginBottom: "8px" }}>SYS_STATUS</div>
             {[
               { label: "SENSORS", color: "#34d399", value: "ONLINE" },
-              { label: "STREAM",  color: "#38bdf8", value: "ACTIVE" },
+              { label: "STREAM", color: "#38bdf8", value: "ACTIVE" },
             ].map((s) => (
               <div key={s.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
                 <span style={{ fontSize: "9px", color: "#475569", letterSpacing: "0.15em" }}>{s.label}</span>
@@ -248,7 +253,7 @@ export const Sidebar = ({
           </button>
         )}
         <div className="fixed bottom-16 left-5">
-        <Logout />
+          <Logout />
         </div>
       </aside>
     </>

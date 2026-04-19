@@ -6,8 +6,9 @@ import ProtectedRoute from './ProtectedRoute';
 import { Sidebar } from './components/Sidebar';
 import { Route, Routes } from 'react-router-dom';
 import SignUp from './components/SignUp';
+import RoomPage from './pages/RoomPage';
 
-type Page = "dashboard" | "users";
+type Page = "dashboard" | "users" | "rooms";
 
 const App: React.FC = () => {
   const [page, setPage] = useState<Page>("dashboard");
@@ -21,6 +22,7 @@ const App: React.FC = () => {
             <Sidebar activePage={page} onNavigate={setPage} collapsed={collapsed} onToggleCollapse={() => setCollapsed((c) => !c)} />
             {page === "dashboard" && <Sensors />}
             {page === "users" && <SignUp />}
+            {page === "rooms" && <RoomPage />}
           </div>
         </ProtectedRoute>
       } />
