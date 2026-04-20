@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import mqtt from "mqtt";
-import { ref, get, child } from "firebase/database";
-import { database } from "../config/firebase"; // Make sure this path is correct
+import { ref, onValue } from "firebase/database"; // Changed from get/child to onValue
+import { database } from "../config/firebase";
 import { useDeviceControl } from "./useDeviceControl";
 import { topic as roomTopics } from "../constant";
 
@@ -55,45 +55,8 @@ const useSensors = ({ room = "all" }: Props) => {
   const [data, setData] = useState<SensorData>(defaultState);
   const clientRef = useRef<mqtt.MqttClient | null>(null);
 
-  // --- 1. BOOT SEQUENCE: Fetch from Firebase ONCE on load ---
-  useEffect(() => {
-    const fetchCloudState = async () => {
-      try {
-        const dbRef = ref(database);
-        const snapshot = await get(child(dbRef, "smart_home/current_state"));
-        
-        if (snapshot.exists()) {
-          const cloudData = snapshot.val();
-          console.log("✅ Cloud state loaded:", cloudData);
-          
-          // Safely merge cloud data with default state
-          setData((prev) => {
-            const mergedState = { ...prev };
-            for (const key in cloudData) {
-              const rKey = key as keyof SensorData;
-              if (mergedState[rKey]) {
-                mergedState[rKey] = { ...mergedState[rKey], ...cloudData[key] };
-              }
-            }
-            return mergedState;
-          });
-        } else {
-          console.log("ℹ️ No cloud state found. Using defaults.");
-        }
-      } catch (error) {
-        console.error("❌ Firebase Fetch Error:", error);
-      } finally {
-        connectToMQTT(); // Move on to MQTT connection
-      }
-    };
-
-    fetchCloudState();
-  }, []); // Empty array ensures this only runs on mount
-
-  // --- 2. CONNECT TO MQTT & LISTEN FOR HARDWARE EVENTS ---
+  // --- 1. CONNECT TO MQTT (Defined first so Firebase can trigger it) ---
   const connectToMQTT = useCallback(() => {
-    setStatus("CONNECTING");
-    
     if (clientRef.current) return; // Prevent double connections
 
     const client = mqtt.connect(import.meta.env.VITE_MQTT_BROKER, {
@@ -119,7 +82,7 @@ const useSensors = ({ room = "all" }: Props) => {
     client.on("error", () => setStatus("ERROR"));
     client.on("offline", () => setStatus("RECONNECTING"));
 
-    // Handle messages coming directly from the hardware (Sensors, physical switches)
+    // Handle messages coming directly from the hardware
     client.on("message", (topic, message) => {
       const value = message.toString();
 
@@ -129,7 +92,6 @@ const useSensors = ({ room = "all" }: Props) => {
             if (deviceTopic === topic) {
               const rKey = roomKey as keyof SensorData;
               
-              // Parse numbers for sensors, keep strings for ON/OFF
               const parsedValue = (deviceKey === 'temperature' || deviceKey === 'humidity' || deviceKey === 'gas_level') 
                 ? parseFloat(value) 
                 : value;
@@ -151,7 +113,48 @@ const useSensors = ({ room = "all" }: Props) => {
 
   }, [room, syncDeviceState]);
 
-  // Cleanup on unmount
+  // --- 2. BOOT SEQUENCE: LIVE FIREBASE STREAM ---
+  useEffect(() => {
+    const dbRef = ref(database, "smart_home/current_state");
+    
+    // onValue creates a permanent live connection. 
+    const unsubscribe = onValue(dbRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const cloudData = snapshot.val();
+        console.log("⚡ Firebase Live Sync:", cloudData);
+        
+        setData((prev) => {
+          const mergedState = { ...prev };
+          for (const key in cloudData) {
+            const rKey = key as keyof SensorData;
+            if (mergedState[rKey]) {
+              mergedState[rKey] = { ...mergedState[rKey], ...cloudData[key] };
+            }
+          }
+          return mergedState;
+        });
+      } else {
+        console.log("ℹ️ No cloud state found. Using defaults.");
+      }
+
+      // If we are stuck in FETCHING_CLOUD, move to CONNECTING so the UI loads
+      setStatus((currentStatus) => {
+        if (currentStatus === "FETCHING_CLOUD") {
+          connectToMQTT();
+          return "CONNECTING";
+        }
+        return currentStatus;
+      });
+
+    }, (error) => {
+      console.error("❌ Firebase Live Sync Error:", error);
+    });
+
+    // Clean up the listener when leaving the page
+    return () => unsubscribe();
+  }, [connectToMQTT]); 
+
+  // Cleanup MQTT on unmount
   useEffect(() => {
     return () => {
       if (clientRef.current) {
@@ -180,7 +183,7 @@ const useSensors = ({ room = "all" }: Props) => {
               // 2. FIREBASE LOG
               controlDevice(`${topic} changed to ${message}`);
 
-              // 3. FIREBASE STATE OVERWRITE
+              // 3. FIREBASE STATE OVERWRITE (Live Sync to all other devices)
               syncDeviceState(roomKey, deviceKey, message);
 
               // 4. HARDWARE COMMAND
@@ -194,7 +197,6 @@ const useSensors = ({ room = "all" }: Props) => {
     }
   }, [controlDevice, syncDeviceState]); 
 
-  // Make sure to return 'status' here so your UI can show the loading screen!
   return { data, publishMessage, status };
 };
 
