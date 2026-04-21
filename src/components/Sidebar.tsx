@@ -1,3 +1,4 @@
+import React from "react";
 import Logout from "./Logout";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -40,7 +41,9 @@ const IconChevronRight = () => (
 );
 
 const IconRooms = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-door-open-icon lucide-door-open"><path d="M11 20H2" /><path d="M11 4.562v16.157a1 1 0 0 0 1.242.97L19 20V5.562a2 2 0 0 0-1.515-1.94l-4-1A2 2 0 0 0 11 4.561z" /><path d="M11 4H8a2 2 0 0 0-2 2v14" /><path d="M14 12h.01" /><path d="M22 20h-3" /></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M11 20H2" /><path d="M11 4.562v16.157a1 1 0 0 0 1.242.97L19 20V5.562a2 2 0 0 0-1.515-1.94l-4-1A2 2 0 0 0 11 4.561z" /><path d="M11 4H8a2 2 0 0 0-2 2v14" /><path d="M14 12h.01" /><path d="M22 20h-3" />
+  </svg>
 );
 
 // ─── Nav items config ─────────────────────────────────────────────────────────
@@ -61,18 +64,61 @@ export const Sidebar = ({
     <>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&display=swap');`}</style>
 
+      {/* =========================================
+          MOBILE BOTTOM NAVIGATION (< 768px)
+      ========================================= */}
+      <nav className="md:hidden fixed bottom-0 left-0 w-full bg-[#060b14]/95 backdrop-blur-md border-t border-slate-800 z-50 flex items-center justify-around px-2 py-2 pb-[env(safe-area-inset-bottom,0.5rem)] font-mono">
+        {NAV_ITEMS.map((item) => {
+          const isActive = activePage === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => onNavigate(item.id)}
+              className="flex flex-col items-center gap-1 p-2 transition-all duration-300 relative rounded-lg"
+              style={{
+                color: isActive ? item.accent : "#64748b",
+                background: isActive ? `${item.accent}15` : "transparent",
+              }}
+            >
+              {/* Active Top Glow */}
+              {isActive && (
+                <span style={{
+                  position: "absolute", top: 0, left: "20%", right: "20%",
+                  height: "2px", borderRadius: "0 0 2px 2px",
+                  background: item.accent,
+                  boxShadow: `0 0 8px ${item.accent}`,
+                }} />
+              )}
+              
+              <span style={{ 
+                filter: isActive ? `drop-shadow(0 0 4px ${item.accent}88)` : "none" 
+              }}>
+                {item.icon}
+              </span>
+              <span style={{ fontSize: "9px", fontWeight: isActive ? 700 : 600, letterSpacing: "0.05em" }}>
+                {item.label.split(" ")[0].toUpperCase()} {/* Shorten labels for mobile */}
+              </span>
+            </button>
+          );
+        })}
+        
+        {/* Logout injected cleanly into the mobile bottom bar */}
+        <div className="flex items-center justify-center p-2 scale-90">
+          <Logout />
+        </div>
+      </nav>
+
+      {/* =========================================
+          DESKTOP SIDEBAR (>= 768px)
+      ========================================= */}
       <aside
+        className="hidden md:flex flex-col relative shrink-0 transition-[width] duration-300 ease-in-out z-40"
         style={{
           width: collapsed ? "64px" : "220px",
           minHeight: "100vh",
           background: "linear-gradient(180deg, #080e1a 0%, #060b14 100%)",
           borderRight: "1px solid #1e293b",
           fontFamily: "'JetBrains Mono', monospace",
-          display: "flex",
-          flexDirection: "column",
-          transition: "width 0.25s cubic-bezier(0.4,0,0.2,1)",
-          position: "relative",
-          flexShrink: 0,
         }}
       >
         {/* Logo / Brand */}
@@ -169,7 +215,7 @@ export const Sidebar = ({
 
                 {/* Icon */}
                 <span style={{
-                  display: "flex", alignItems: "center", justifyContent: "center",
+                  display: "flex", alignItems: "center", justifyItems: "center",
                   color: isActive ? item.accent : "inherit",
                   filter: isActive ? `drop-shadow(0 0 4px ${item.accent}88)` : "none",
                   flexShrink: 0,
@@ -252,7 +298,9 @@ export const Sidebar = ({
             {collapsed ? <IconChevronRight /> : <IconChevronLeft />}
           </button>
         )}
-        <div className="fixed bottom-16 left-5">
+        
+        {/* Fixed positioning removed: Now pushes cleanly to the bottom of the column */}
+        <div className="mt-auto mb-8 flex justify-center w-full">
           <Logout />
         </div>
       </aside>
