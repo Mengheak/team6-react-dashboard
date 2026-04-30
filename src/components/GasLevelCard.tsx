@@ -4,7 +4,7 @@ const GasLevelCard = ({ gasLevel, gasAlert }: { gasLevel: number; gasAlert: "GAS
   const isAlert = gasAlert === "GAS";
   const hexColor = isAlert ? "#ef4444" : "#22d3ee";
   const pct = Math.min(100, Math.max(0, gasLevel));
-
+console.log(gasAlert, gasLevel)
   // Segmented bar ticks
   const ticks = Array.from({ length: 20 }, (_, i) => i);
 
@@ -55,7 +55,7 @@ const GasLevelCard = ({ gasLevel, gasAlert }: { gasLevel: number; gasAlert: "GAS
             className="text-6xl font-black tabular-nums leading-none"
             style={{ color: hexColor, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 24px ${hexColor}88` }}
           >
-            {gasLevel}
+            {gasLevel}s
           </div>
           <div className="text-xs text-slate-500 tracking-widest" style={{ fontFamily: "'JetBrains Mono', monospace" }}>PPM</div>
         </div>

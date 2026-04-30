@@ -24,8 +24,8 @@ export interface SensorData {
   };
   kitchen: {
     led: string | null;
-    gasLevel: number | null;
-    gasAlert: string | null;
+    gas_level: number | null;
+    gas_alert: string | null;
   };
   bathroom: {
     led: string | null;
@@ -55,7 +55,7 @@ const defaultState: SensorData = {
     fan1: null,
     fan2: null,
   },
-  kitchen: { led: null, gasLevel: null, gasAlert: null },
+  kitchen: { led: null, gas_level: null, gas_alert: null },
   bathroom: { led: null },
   bedroom: { led: null, fan: null },
   global: { servo: null },

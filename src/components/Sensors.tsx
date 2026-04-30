@@ -16,8 +16,8 @@ interface SensorsProps {
 export const Sensors: React.FC<SensorsProps> = ({ data }) => {
   const { living_room, kitchen } = data;
   const { temperature, humidity } = living_room;
-  const { gasLevel, gasAlert } = kitchen;
-  
+  const { gas_level, gas_alert } = kitchen;
+  console.log(data)
   const tempHistory = useHistory(living_room.temperature as number, 30);
   const humHistory = useHistory(living_room.humidity as number, 30);
   
@@ -100,7 +100,7 @@ export const Sensors: React.FC<SensorsProps> = ({ data }) => {
 
       {/* Gas Level — full width */}
       <div className="w-full max-w-2xl mb-4">
-        <GasLevelCard gasLevel={gasLevel as number} gasAlert={gasAlert as "GAS" | "SAFE"} />
+        <GasLevelCard gasLevel={gas_level as number} gasAlert={gas_alert as "GAS" | "SAFE"} />
       </div>
 
       {/* Footer / Status */}
