@@ -2,6 +2,8 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 
+
+//firebase config
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -13,6 +15,14 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
+// Initializes your Firebase app instance using the provided configuration.
+// This sets up the connection between your project and Firebase services.
 const app = initializeApp(firebaseConfig);
+
+// Gets the Firebase Authentication service tied to your app.
+// Used for handling user sign-in, sign-out, and authentication flows.
 export const auth = getAuth(app);
-export const database = getDatabase(app)
+
+// Gets the Firebase Realtime Database service tied to your app.
+// Allows you to read and write data in real-time across clients.
+export const database = getDatabase(app);

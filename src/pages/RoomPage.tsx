@@ -61,7 +61,7 @@ const RoomPage: React.FC = () => {
       </header>
 
       {/* 3. Dynamic Content Grid - Optimized for Mobile, Tablet, and Desktop */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 sm:gap-6 relative z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 relative z-10">
         {(activeTab === "all" || activeTab === "living_room") && (
           <LivingRoom data={data} publishMessage={publishMessage} />
         )}
