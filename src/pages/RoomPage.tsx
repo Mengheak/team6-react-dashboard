@@ -6,7 +6,7 @@ import { Kitchen } from "../components/rooms/Kitchen";
 import { BedRoom } from "../components/rooms/BedRoom";
 import Garden from "../components/rooms/Garden"; 
 
-type RoomKey = "all" | "living_room" | "kitchen" | "bathroom" | "bedroom" | "garden";
+type RoomKey = "all" | "livingroom" | "kitchen" | "bathroom" | "bedroom" | "garden";
 
 const RoomPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<RoomKey>("all");
@@ -64,7 +64,7 @@ const RoomPage: React.FC = () => {
 
       {/* 3. Dynamic Content Grid - Optimized for Mobile, Tablet, and Desktop */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 relative z-10">
-        {(activeTab === "all" || activeTab === "living_room") && (
+        {(activeTab === "all" || activeTab === "livingroom") && (
           <LivingRoom data={data} publishMessage={publishMessage} />
         )}
         {(activeTab === "all" || activeTab === "kitchen") && (
