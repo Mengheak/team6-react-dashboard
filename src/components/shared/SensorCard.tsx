@@ -64,7 +64,7 @@ const SensorCard = ({
             className="text-5xl font-black tabular-nums leading-none"
             style={{ color: hexColor, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 20px ${hexColor}66` }}
           >
-            {value?.toFixed(1)}
+            {Number(value)?.toFixed(1)}
           </div>
           <div className="text-sm font-medium text-slate-400">{unit}</div>
           <div className="mt-2 flex gap-3 text-xs text-slate-500" style={{ fontFamily: "'JetBrains Mono', monospace" }}>

@@ -4,9 +4,9 @@ import ActuatorCard from '../ActuatorCard';
 import { topic as roomTopics } from '../../constant';
 
 export const LivingRoom: React.FC<{ data: SensorData; publishMessage: (topic: string, message: string) => void }> = ({ data, publishMessage }) => {
-  const motionPayload = data.living_room.motion?.toUpperCase();
+  const motionPayload = data.livingroom.motion?.toUpperCase();
   const isMotion = motionPayload === "MOTION" || motionPayload === "DETECTED" || motionPayload === "ON";
-
+console.log(data)
   return (
 
 
@@ -21,16 +21,16 @@ export const LivingRoom: React.FC<{ data: SensorData; publishMessage: (topic: st
         <div className="text-right">
           <div className="text-[9px] text-slate-500 uppercase font-bold mb-1 tracking-widest">ENV_TELEMETRY</div>
           <span className="text-sm font-bold text-sky-400 tabular-nums">
-            {data.living_room.temperature ?? '--'}°C / {data.living_room.humidity ?? '--'}%
+            {data.livingroom.temperature ?? '--'}°C / {data.livingroom.humidity ?? '--'}%
           </span>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <ActuatorCard
-          onclick={() => publishMessage(roomTopics.living_room.led1, data.living_room.led1 === "ON" ? "OFF" : "ON")}
+          onclick={() => publishMessage(roomTopics.livingroom.led1, data.livingroom.led1 === "ON" ? "OFF" : "ON")}
           label="PRIMARY_LED"
-          value={data.living_room.led1 as "ON" | "OFF"}
+          value={data.livingroom.led1 as "ON" | "OFF"}
           icon="💡"
           subLabel="ZONE_A_LIGHT"
           hexColorOn="#38bdf8"
@@ -38,9 +38,9 @@ export const LivingRoom: React.FC<{ data: SensorData; publishMessage: (topic: st
         />
 
         <ActuatorCard
-          onclick={() => publishMessage(roomTopics.living_room.led2, data.living_room.led2 === "ON" ? "OFF" : "ON")}
+          onclick={() => publishMessage(roomTopics.livingroom.led2, data.livingroom.led2 === "ON" ? "OFF" : "ON")}
           label="AMBIENT_LED"
-          value={data.living_room.led2 as "ON" | "OFF"}
+          value={data.livingroom.led2 as "ON" | "OFF"}
           icon="✨"
           subLabel="ZONE_B_LIGHT"
           hexColorOn="#38bdf8"
@@ -48,27 +48,27 @@ export const LivingRoom: React.FC<{ data: SensorData; publishMessage: (topic: st
         />
 
         <ActuatorCard
-          onclick={() => publishMessage(roomTopics.living_room.fan1, data.living_room.fan1 === "ON" ? "OFF" : "ON")}
+          onclick={() => publishMessage(roomTopics.livingroom.fan1, data.livingroom.fan1 === "ON" ? "OFF" : "ON")}
           label="CLIMATE_FAN1"
-          value={data.living_room.fan1 as "ON" | "OFF"}
+          value={data.livingroom.fan1 as "ON" | "OFF"}
           icon="🌀"
           subLabel="AIR_CIRCULATION"
           hexColorOn="#a78bfa"
           hexColorOff="#1e293b"
         />
         <ActuatorCard
-          onclick={() => publishMessage(roomTopics.living_room.fan2, data.living_room.fan2 === "ON" ? "OFF" : "ON")}
+          onclick={() => publishMessage(roomTopics.livingroom.fan2, data.livingroom.fan2 === "ON" ? "OFF" : "ON")}
           label="CLIMATE_FAN2"
-          value={data.living_room.fan2 as "ON" | "OFF"}
+          value={data.livingroom.fan2 as "ON" | "OFF"}
           icon="🌀"
           subLabel="AIR_CIRCULATION"
           hexColorOn="#a78bfa"
           hexColorOff="#1e293b"
         />
         <ActuatorCard
-          onclick={() => publishMessage(roomTopics.living_room.door, data.living_room.door === "ON" ? "OFF" : "ON")}
+          onclick={() => publishMessage(roomTopics.livingroom.door, data.livingroom.door === "ON" ? "OFF" : "ON")}
           label="DOOR"
-          value={data.living_room.door as "ON" | "OFF"}
+          value={data.livingroom.door as "ON" | "OFF"}
           icon="🚪"
           subLabel="SECURITY_LOCK"
           hexColorOn="#fb7185"

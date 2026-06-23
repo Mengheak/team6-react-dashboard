@@ -13,11 +13,11 @@ interface SensorsProps {
 }
 
 export const Sensors: React.FC<SensorsProps> = ({ data }) => {
-  const { living_room, kitchen } = data;
-  const { temperature, humidity } = living_room;
+  const { livingroom, kitchen } = data;
+  const { temperature, humidity } = livingroom;
   const { gasLevel, gasAlert } = kitchen;
-  const tempHistory = useHistory(living_room.temperature as number, 30);
-  const humHistory = useHistory(living_room.humidity as number, 30);
+  const tempHistory = useHistory(livingroom.temperature as number, 30);
+  const humHistory = useHistory(livingroom.humidity as number, 30);
   
   const [now, setNow] = useState(new Date());
   

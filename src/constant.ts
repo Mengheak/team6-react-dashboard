@@ -7,7 +7,7 @@ export const topics: Map<string, string> = new Map([
 ]);
 
 export const topic = {
-  living_room: {
+  livingroom: {
     temperature: "home/livingroom/temperature",
     humidity: "home/livingroom/humidity",
     led1: "home/livingroom/led1",

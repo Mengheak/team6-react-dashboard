@@ -42,7 +42,7 @@ const ArcGauge = ({
         style={{ filter: `drop-shadow(0 0 6px ${color})` }}
       />
       <text x={cx} y={cy - 6} textAnchor="middle" fill={color} fontSize="18" fontWeight="700" fontFamily="'JetBrains Mono', monospace">
-        {value?.toFixed(1)}
+        {Number(value)?.toFixed(1)}
       </text>
       <text x={cx} y={cy + 12} textAnchor="middle" fill="#64748b" fontSize="9" fontFamily="'JetBrains Mono', monospace" letterSpacing="2">
         {label}

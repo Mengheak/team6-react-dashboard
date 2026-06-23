@@ -5,7 +5,6 @@ import { topic as roomTopics } from '../../constant';
 
 export const Kitchen: React.FC<{ data: SensorData; publishMessage: (topic: string, message: string) => void }> = ({ data, publishMessage }) => {
   const isAlert = data.kitchen.gasAlert === "GAS";
-  console.log(data)
   return (
     <div className={`w-full max-w-2xl border ${isAlert ? 'border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.2)]' : 'border-slate-800'} bg-slate-900/40 p-6 rounded-sm relative overflow-hidden group transition-colors duration-500`}>
       <div className="flex justify-between items-center mb-6">

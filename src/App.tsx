@@ -16,6 +16,7 @@ const App: React.FC = () => {
   const [page, setPage] = useState<Page>("dashboard");
   const [collapsed, setCollapsed] = useState(false);
   const { status, data } = useSensors({ room: "all" });
+  console.log(data)
   return (
     <Routes>
       <Route path='/' element={

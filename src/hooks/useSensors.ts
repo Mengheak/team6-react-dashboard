@@ -13,7 +13,7 @@ export type ConnectionStatus =
   | "ERROR";
 
 export interface SensorData {
-  living_room: {
+  livingroom: {
     temperature: number | null;
     humidity: number | null;
     led1: string | null;
@@ -47,14 +47,14 @@ export interface SensorData {
   };
 }
 
-type RoomKey = "living_room" | "kitchen" | "bathroom" | "bedroom" | "garden";
+type RoomKey = "livingroom" | "kitchen" | "bathroom" | "bedroom" | "garden";
 
 type Props = {
   room?: "all" | RoomKey;
 };
 
 const defaultState: SensorData = {
-  living_room: {
+  livingroom: {
     temperature: null,
     humidity: null,
     led1: null,
