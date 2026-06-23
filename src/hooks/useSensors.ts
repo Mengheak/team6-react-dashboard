@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import mqtt from "mqtt";
-import { ref, onValue } from "firebase/database"; // Changed from get/child to onValue
+import { ref, onValue } from "firebase/database";
 import { database } from "../config/firebase";
 import { useDeviceControl } from "./useDeviceControl";
 import { topic as roomTopics } from "../constant";
@@ -21,11 +21,19 @@ export interface SensorData {
     door: string | null;
     fan1: string | null;
     fan2: string | null;
+    motion: string | null;
+    fire: string | null;
+  };
+  garden: {
+    soil: number | null;
+    pump: string | null;
+    pumptime: string | null;
   };
   kitchen: {
     led: string | null;
-    gas_level: number | null;
-    gas_alert: string | null;
+    gasLevel: number | null;
+    gasAlert: string | null;
+    fire: "SAFE" | string | null;
   };
   bathroom: {
     led: string | null;
@@ -39,7 +47,7 @@ export interface SensorData {
   };
 }
 
-type RoomKey = "living_room" | "kitchen" | "bathroom" | "bedroom";
+type RoomKey = "living_room" | "kitchen" | "bathroom" | "bedroom" | "garden";
 
 type Props = {
   room?: "all" | RoomKey;
@@ -54,11 +62,18 @@ const defaultState: SensorData = {
     door: null,
     fan1: null,
     fan2: null,
+    motion: null,
+    fire: null,
   },
-  kitchen: { led: null, gas_level: null, gas_alert: null },
+  garden: {
+    soil: null,
+    pump: null,
+    pumptime: null,
+  },
+  kitchen: { led: null, gasLevel: null, gasAlert: null, fire: null },
   bathroom: { led: null },
   bedroom: { led: null, fan: null },
-  global: { servo: null },
+  global: { servo: null },  
 };
 
 const useSensors = ({ room = "all" }: Props) => {
@@ -68,9 +83,8 @@ const useSensors = ({ room = "all" }: Props) => {
   const [data, setData] = useState<SensorData>(defaultState);
   const clientRef = useRef<mqtt.MqttClient | null>(null);
 
-  // --- 1. CONNECT TO MQTT (Defined first so Firebase can trigger it) ---
   const connectToMQTT = useCallback(() => {
-    if (clientRef.current) return; // Prevent double connections
+    if (clientRef.current) return;
 
     const client = mqtt.connect(import.meta.env.VITE_MQTT_BROKER, {
       username: import.meta.env.VITE_MQTT_USERNAME,
@@ -95,7 +109,6 @@ const useSensors = ({ room = "all" }: Props) => {
     client.on("error", () => setStatus("ERROR"));
     client.on("offline", () => setStatus("RECONNECTING"));
 
-    // Handle messages coming directly from the hardware
     client.on("message", (topic, message) => {
       const value = message.toString();
 
@@ -108,7 +121,8 @@ const useSensors = ({ room = "all" }: Props) => {
               const parsedValue =
                 deviceKey === "temperature" ||
                 deviceKey === "humidity" ||
-                deviceKey === "gasLevel"
+                deviceKey === "gas_level" ||
+                deviceKey === "soil"
                   ? parseFloat(value)
                   : value;
 
@@ -126,11 +140,9 @@ const useSensors = ({ room = "all" }: Props) => {
     });
   }, [room, syncDeviceState]);
 
-  // --- 2. BOOT SEQUENCE: LIVE FIREBASE STREAM ---
   useEffect(() => {
     const dbRef = ref(database, "smart_home/current_state");
 
-    // onValue creates a permanent live connection.
     const unsubscribe = onValue(
       dbRef,
       (snapshot) => {
@@ -152,7 +164,6 @@ const useSensors = ({ room = "all" }: Props) => {
           console.log("ℹ️ No cloud state found. Using defaults.");
         }
 
-        // If we are stuck in FETCHING_CLOUD, move to CONNECTING so the UI loads
         setStatus((currentStatus) => {
           if (currentStatus === "FETCHING_CLOUD") {
             connectToMQTT();
@@ -166,11 +177,9 @@ const useSensors = ({ room = "all" }: Props) => {
       },
     );
 
-    // Clean up the listener when leaving the page
     return () => unsubscribe();
   }, [connectToMQTT]);
 
-  // Cleanup MQTT on unmount
   useEffect(() => {
     return () => {
       if (clientRef.current) {
@@ -180,7 +189,6 @@ const useSensors = ({ room = "all" }: Props) => {
     };
   }, []);
 
-  // --- 3. HANDLE DASHBOARD CLICKS ---
   const publishMessage = useCallback(
     (topic: string, message: string) => {
       if (clientRef.current?.connected) {
@@ -190,19 +198,15 @@ const useSensors = ({ room = "all" }: Props) => {
               if (deviceTopic === topic) {
                 const rKey = roomKey as keyof SensorData;
 
-                // 1. OPTIMISTIC UI UPDATE
                 setData((prev) => ({
                   ...prev,
                   [rKey]: { ...prev[rKey], [deviceKey]: message },
                 }));
 
-                // 2. FIREBASE LOG
                 controlDevice(`${topic} changed to ${message}`);
 
-                // 3. FIREBASE STATE OVERWRITE (Live Sync to all other devices)
                 syncDeviceState(roomKey, deviceKey, message);
 
-                // 4. HARDWARE COMMAND
                 clientRef.current.publish(topic, message, { qos: 1 });
 
                 return;

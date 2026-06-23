@@ -4,20 +4,23 @@ import BathRoom from "../components/rooms/BathRoom";
 import LivingRoom from "../components/rooms/LivingRoom";
 import { Kitchen } from "../components/rooms/Kitchen";
 import { BedRoom } from "../components/rooms/BedRoom";
+import Garden from "../components/rooms/Garden"; 
 
-type RoomKey = "all" | "living_room" | "kitchen" | "bathroom" | "bedroom";
+type RoomKey = "all" | "living_room" | "kitchen" | "bathroom" | "bedroom" | "garden";
 
 const RoomPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<RoomKey>("all");
   const { data, publishMessage } = useSensors({ 
     room: activeTab === "all" ? "all" : activeTab 
   });
+  
   const tabs = [
     { id: "all", label: "OVERVIEW", code: "00" },
     { id: "living_room", label: "LIVING", code: "01" },
     { id: "bedroom", label: "BEDROOM", code: "02" },
     { id: "kitchen", label: "KITCHEN", code: "03" },
     { id: "bathroom", label: "BATHROOM", code: "04" },
+    { id: "garden", label: "GARDEN", code: "05" }, 
   ];
 
   return (
@@ -32,7 +35,6 @@ const RoomPage: React.FC = () => {
           </p>
         </div>
 
-        {/* 2. Cyberpunk Tab Navigation - Made horizontally scrollable on mobile */}
         <div className="w-full xl:w-auto overflow-x-auto pb-2 xl:pb-0 hide-scrollbar">
           <nav className="flex items-center gap-1 bg-slate-900/50 p-1 rounded-lg border border-slate-800 min-w-max">
             {tabs.map((tab) => (
@@ -73,6 +75,9 @@ const RoomPage: React.FC = () => {
         )}
         {(activeTab === "all" || activeTab === "bathroom") && (
           <BathRoom data={data} publishMessage={publishMessage} />
+        )}
+        {(activeTab === "all" || activeTab === "garden") && (
+          <Garden data={data} publishMessage={publishMessage} />
         )}
       </div>
 

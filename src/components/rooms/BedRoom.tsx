@@ -9,7 +9,6 @@ export const BedRoom: React.FC<{ data: SensorData; publishMessage: (topic: strin
 
     <div className="flex justify-between items-center mb-6">
       <div className="flex flex-col">
-        <span className="text-[10px] text-indigo-400 font-bold tracking-[0.3em]">UNIT_02</span>
         <h2 className="text-xl font-black text-white tracking-tighter italic uppercase">BED_ROOM</h2>
       </div>
     </div>
@@ -24,6 +23,7 @@ export const BedRoom: React.FC<{ data: SensorData; publishMessage: (topic: strin
         hexColorOn="#a78bfa"
         hexColorOff="#1e293b"
       />
+      
       <ActuatorCard
         onclick={() => publishMessage(roomTopics.bedroom.fan, data.bedroom.fan === "ON" ? "OFF" : "ON")}
         label="SILENT_FAN"

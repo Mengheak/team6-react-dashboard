@@ -4,7 +4,7 @@ import ActuatorCard from '../ActuatorCard';
 import { topic as roomTopics } from '../../constant';
 
 export const Kitchen: React.FC<{ data: SensorData; publishMessage: (topic: string, message: string) => void }> = ({ data, publishMessage }) => {
-  const isAlert = data.kitchen.gas_alert === "GAS";
+  const isAlert = data.kitchen.gasAlert === "GAS";
   console.log(data)
   return (
     <div className={`w-full max-w-2xl border ${isAlert ? 'border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.2)]' : 'border-slate-800'} bg-slate-900/40 p-6 rounded-sm relative overflow-hidden group transition-colors duration-500`}>
@@ -21,16 +21,21 @@ export const Kitchen: React.FC<{ data: SensorData; publishMessage: (topic: strin
       <div className="mb-6 p-4 bg-black/40 border-l-2 border-orange-500">
         <span className="text-[10px] text-slate-500 block mb-1 font-bold tracking-widest">GAS Level</span>
         <span className="text-2xl font-black text-orange-400 tabular-nums">
-          {data.kitchen.gas_level ?? 0} <span className="text-sm font-normal opacity-50">PPM</span>
+          {data.kitchen.gasLevel ?? 0} <span className="text-sm font-normal opacity-50">PPM</span>
         </span>
       </div>
-
+      <div className="mb-6 p-4 bg-black/40 border-l-2 border-orange-500">
+        <span className="text-[10px] text-slate-500 block mb-1 font-bold tracking-widest">FIRE</span>
+        <span className="text-2xl font-black text-orange-400 tabular-nums">
+          {data.kitchen.fire?.toUpperCase() === "SAFE" ? "SAFE" : "ALERT"} <span className="text-sm font-normal opacity-50">{data.kitchen.fire === "SAFE" ? "" : "🔥"}</span>
+        </span>
+      </div>
       <ActuatorCard
         onclick={() => publishMessage(roomTopics.kitchen.led, data.kitchen.led === "ON" ? "OFF" : "ON")}
-        label="KITCHEN_OVERHEAD"
+        label="LED"
         value={data.kitchen.led as "ON" | "OFF"}
         icon="🍳"
-        subLabel="UTILITY_LIGHT"
+        subLabel="Kitchen_Light"
         hexColorOn="#facc15"
         hexColorOff="#1e293b"
       />

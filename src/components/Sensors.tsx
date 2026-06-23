@@ -7,7 +7,6 @@ import SensorCard from "./shared/SensorCard";
 import StatusDot from "./shared/StatusDot";
 import GasLevelCard from "./GasLevelCard";
 
-// 2. Accept data (and publishMessage, if needed later) as props from App.tsx
 interface SensorsProps {
   data: SensorData;
   publishMessage?: (topic: string, message: string) => void;
@@ -16,8 +15,7 @@ interface SensorsProps {
 export const Sensors: React.FC<SensorsProps> = ({ data }) => {
   const { living_room, kitchen } = data;
   const { temperature, humidity } = living_room;
-  const { gas_level, gas_alert } = kitchen;
-  console.log(data)
+  const { gasLevel, gasAlert } = kitchen;
   const tempHistory = useHistory(living_room.temperature as number, 30);
   const humHistory = useHistory(living_room.humidity as number, 30);
   
@@ -89,7 +87,6 @@ export const Sensors: React.FC<SensorsProps> = ({ data }) => {
         />
       </div>
 
-      {/* Section divider */}
       <div className="w-full max-w-2xl my-6 flex items-center gap-4">
         <div className="h-px flex-1" style={{ background: "linear-gradient(90deg, transparent, #1e293b)" }} />
         <span className="text-[10px] sm:text-xs tracking-[0.3em] text-slate-600 uppercase text-center" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
@@ -98,12 +95,10 @@ export const Sensors: React.FC<SensorsProps> = ({ data }) => {
         <div className="h-px flex-1" style={{ background: "linear-gradient(90deg, #1e293b, transparent)" }} />
       </div>
 
-      {/* Gas Level — full width */}
       <div className="w-full max-w-2xl mb-4">
-        <GasLevelCard gasLevel={gas_level as number} gasAlert={gas_alert as "GAS" | "SAFE"} />
+        <GasLevelCard gasLevel={gasLevel as number} gasAlert={gasAlert as "GAS" | "SAFE"} />
       </div>
 
-      {/* Footer / Status */}
       <div className="mt-8 mb-6 flex flex-wrap items-center justify-center gap-2 text-[10px] sm:text-xs text-slate-600 tracking-widest text-center">
         <StatusDot />
         <span>POLLING INTERVAL 1.2s · NODE_ID #ENV-01</span>
